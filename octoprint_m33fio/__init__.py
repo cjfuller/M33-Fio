@@ -5,6 +5,7 @@
 __author__ = "donovan6000 <donovan6000@exploitkings.com>"
 __license__ = "GNU General Public License http://www.gnu.org/licenses/gpl.txt"
 __copyright__ = "Copyright (C) 2015-2017 Exploit Kings. All rights reserved."
+__plugin_pythoncompat__ = ">=3,<4"
 
 
 # Imports
