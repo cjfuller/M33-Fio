@@ -27,7 +27,7 @@ plugin_author = "donovan6000"
 plugin_author_email = "donovan6000@exploitkings.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/donovan6000/M33-Fio"
+plugin_url = "https://github.com/cjfuller/M33-Fio"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "GPLv3"
@@ -67,69 +67,75 @@ import sys
 import subprocess
 
 try:
-	import octoprint_setuptools
+    import octoprint_setuptools
 except:
-	print("Could not import OctoPrint's setuptools, are you sure you are running that under "
-	      "the same python installation that OctoPrint is installed under?")
-	import sys
-	sys.exit(-1)
+    print(
+        "Could not import OctoPrint's setuptools, are you sure you are running that under "
+        "the same python installation that OctoPrint is installed under?"
+    )
+    import sys
+
+    sys.exit(-1)
 
 setup_parameters = octoprint_setuptools.create_plugin_setup_parameters(
-	identifier=plugin_identifier,
-	package=plugin_package,
-	name=plugin_name,
-	version=plugin_version,
-	description=plugin_description,
-	author=plugin_author,
-	mail=plugin_author_email,
-	url=plugin_url,
-	license=plugin_license,
-	requires=plugin_requires,
-	additional_packages=plugin_additional_packages,
-	ignored_packages=plugin_ignored_packages,
-	additional_data=plugin_additional_data
+    identifier=plugin_identifier,
+    package=plugin_package,
+    name=plugin_name,
+    version=plugin_version,
+    description=plugin_description,
+    author=plugin_author,
+    mail=plugin_author_email,
+    url=plugin_url,
+    license=plugin_license,
+    requires=plugin_requires,
+    additional_packages=plugin_additional_packages,
+    ignored_packages=plugin_ignored_packages,
+    additional_data=plugin_additional_data,
 )
 
 if len(additional_setup_parameters):
-	from octoprint.util import dict_merge
-	setup_parameters = dict_merge(setup_parameters, additional_setup_parameters)
+    from octoprint.util import dict_merge
 
-def findPip() :
+    setup_parameters = dict_merge(setup_parameters, additional_setup_parameters)
 
-	# Created by Gina Häußge <osd@foosel.net>
-	# Copyright (C) 2014 The OctoPrint Project - Released under terms of the AGPLv3 License
-	python_command = sys.executable
-	binary_dir = os.path.dirname(python_command)
 
-	pip_command = os.path.join(binary_dir, "pip")
-	if sys.platform == "win32":
-		# Windows is a bit special... first of all the file will be called pip.exe, not just pip, and secondly
-		# for a non-virtualenv install (e.g. global install) the pip binary will not be located in the
-		# same folder as python.exe, but in a subfolder Scripts, e.g.
-		#
-		# C:\Python2.7\
-		#  |- python.exe
-		#  `- Scripts
-		#      `- pip.exe
+def findPip():
 
-		# virtual env?
-		pip_command = os.path.join(binary_dir, "pip.exe")
+    # Created by Gina Häußge <osd@foosel.net>
+    # Copyright (C) 2014 The OctoPrint Project - Released under terms of the AGPLv3 License
+    python_command = sys.executable
+    binary_dir = os.path.dirname(python_command)
 
-		if not os.path.isfile(pip_command):
-			# nope, let's try the Scripts folder then
-			scripts_dir = os.path.join(binary_dir, "Scripts")
-			if os.path.isdir(scripts_dir):
-				pip_command = os.path.join(scripts_dir, "pip.exe")
+    pip_command = os.path.join(binary_dir, "pip")
+    if sys.platform == "win32":
+        # Windows is a bit special... first of all the file will be called pip.exe, not just pip, and secondly
+        # for a non-virtualenv install (e.g. global install) the pip binary will not be located in the
+        # same folder as python.exe, but in a subfolder Scripts, e.g.
+        #
+        # C:\Python2.7\
+        #  |- python.exe
+        #  `- Scripts
+        #      `- pip.exe
 
-	if not os.path.isfile(pip_command) or not os.access(pip_command, os.X_OK):
-		pip_command = None
-	
-	return pip_command
+        # virtual env?
+        pip_command = os.path.join(binary_dir, "pip.exe")
+
+        if not os.path.isfile(pip_command):
+            # nope, let's try the Scripts folder then
+            scripts_dir = os.path.join(binary_dir, "Scripts")
+            if os.path.isdir(scripts_dir):
+                pip_command = os.path.join(scripts_dir, "pip.exe")
+
+    if not os.path.isfile(pip_command) or not os.access(pip_command, os.X_OK):
+        pip_command = None
+
+    return pip_command
+
 
 # Uninstall plugins that break M33 Fio if installing M33 Fio
 pipCommand = findPip()
-if pipCommand is not None and "install" in sys.argv :
-	subprocess.call([pipCommand, "uninstall", "OctoPrint-M3DFio", "-y"])
-	subprocess.call([pipCommand, "uninstall", "OctoPrint-Slicer", "-y"])
+if pipCommand is not None and "install" in sys.argv:
+    subprocess.call([pipCommand, "uninstall", "OctoPrint-M3DFio", "-y"])
+    subprocess.call([pipCommand, "uninstall", "OctoPrint-Slicer", "-y"])
 
 setup(**setup_parameters)
